@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import org.berendeev.roma.simplerealm.presentation.ui.fragment.InputFragment;
+import org.berendeev.roma.simplerealm.presentation.ui.fragment.ListFragment;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class FragmentsPagerAdapter extends FragmentPagerAdapter {
                 return InputFragment.getInstance();
             }
             case 1:{
-                return InputFragment.getInstance();
+                return ListFragment.getInstance();
             }
             default:
                 throw new IllegalArgumentException("illegal viewPager position");

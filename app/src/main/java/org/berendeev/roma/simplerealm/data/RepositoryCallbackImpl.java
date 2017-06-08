@@ -3,13 +3,15 @@ package org.berendeev.roma.simplerealm.data;
 import org.berendeev.roma.simplerealm.domain.LivecycleObject.LivecycleListener;
 import org.berendeev.roma.simplerealm.domain.Repository;
 import org.berendeev.roma.simplerealm.domain.model.Note;
-import org.berendeev.roma.simplerealm.domain.model.Parent;
 
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.realm.OrderedCollectionChangeSet;
+import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
-import io.realm.RealmList;
+import io.realm.RealmResults;
 
 import static org.berendeev.roma.simplerealm.domain.model.Note.NAME;
 
@@ -31,16 +33,16 @@ public class RepositoryCallbackImpl implements Repository, LivecycleListener {
     }
 
     @Override public boolean saveNote(String name, String field) {
-        Parent parent = realm.where(Parent.class).findFirst();
-        RealmList<Note> notes = parent.getNotes();
-        if (realm.where(Note.class).findAllSorted(NAME).first() == null){
+
+        if (realm.where(Note.class).equalTo(NAME, name) == null){
+            realm.beginTransaction();
             Note note = realm.createObject(Note.class, name);
-            notes.add(note);
+            note.setField(field);
+            realm.commitTransaction();
             return true;
         }else {
             return false;
         }
-
     }
 
     @Override public Note readNote(String name) {
@@ -48,12 +50,25 @@ public class RepositoryCallbackImpl implements Repository, LivecycleListener {
         return first;
     }
 
-    @Override public List<Note> readAllNotes() {
-        Parent parent = realm.where(Parent.class).findFirst();
-        return Collections.unmodifiableList(parent.getNotes());
+    @Override public Observable<List<Note>> getNotesObservable() {
+        return Observable.create(emitter -> {
+
+            RealmResults<Note> all = realm.where(Note.class).findAll();
+            all.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<Note>>() {
+                @Override public void onChange(RealmResults<Note> collection, OrderedCollectionChangeSet changeSet) {
+                    emitter.onNext(Collections.unmodifiableList(all));
+                }
+            });
+            emitter.onNext(Collections.unmodifiableList(all));
+        });
     }
 
     @Override public void deleteNote(String name) {
-        realm.where(Note.class).equalTo(NAME, name).findFirst().deleteFromRealm();
+        realm.beginTransaction();
+        Note first = realm.where(Note.class).equalTo(NAME, name).findFirst();
+        if (first != null){
+            first.deleteFromRealm();
+        }
+        realm.commitTransaction();
     }
 }

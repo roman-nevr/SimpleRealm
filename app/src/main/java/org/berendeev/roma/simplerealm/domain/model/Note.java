@@ -13,6 +13,9 @@ public class Note extends RealmObject {
     @Required
     private String field;
 
+    public Note() {
+    }
+
     public Note(String name, String field) {
         this.name = name;
         this.field = field;
@@ -32,5 +35,22 @@ public class Note extends RealmObject {
 
     public void setField(String field) {
         this.field = field;
+    }
+
+    @Override public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Note)) return false;
+
+        Note note = (Note) o;
+
+        if (!name.equals(note.name)) return false;
+        return field.equals(note.field);
+
+    }
+
+    @Override public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + field.hashCode();
+        return result;
     }
 }

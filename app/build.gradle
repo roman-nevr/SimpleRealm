@@ -26,6 +26,12 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo'
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -53,4 +59,7 @@ dependencies {
     compile 'com.arello-mobile:moxy-android:1.5.3'
     apt 'com.arello-mobile:moxy-compiler:1.5.3'
     compile 'com.arello-mobile:moxy-app-compat:1.5.3'
+    //
+    compile 'com.facebook.stetho:stetho:1.4.1'
+    compile 'com.uphyca:stetho_realm:2.0.0'
 }

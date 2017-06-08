@@ -4,9 +4,18 @@ import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
-@StateStrategyType(AddToEndSingleStrategy.class)
-public interface InputView extends MvpView {
-    void showInputError(String error);
+import org.berendeev.roma.simplerealm.domain.model.Note;
 
-    void hideInputError();
+import java.util.List;
+
+@StateStrategyType(AddToEndSingleStrategy.class)
+public interface ListView extends MvpView {
+
+    void showList(List<Note> notes);
+
+    void showNote(Note note);
+
+    void hideNote();
+
+    void showNotFound();
 }

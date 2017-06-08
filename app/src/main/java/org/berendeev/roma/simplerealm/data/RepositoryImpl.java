@@ -27,17 +27,18 @@ public class RepositoryImpl implements Repository {
         disposable.dispose();
     }
 
-    @Override public void saveNote(Note note) {
-
+    @Override public boolean saveNote(String name, String field) {
+        return false;
     }
 
     @Override public Note readNote(String name) {
         return null;
     }
 
-    @Override public List<Note> readAllNotes() {
+    @Override public Observable<List<Note>> getNotesObservable() {
         return null;
     }
+
 
     @Override public void deleteNote(String name) {
 
